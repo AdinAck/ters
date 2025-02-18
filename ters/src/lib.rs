@@ -74,7 +74,7 @@
 
 #![no_std]
 
-pub use macros::ters;
+pub use ters_macros::ters;
 
 #[cfg(test)]
 mod tests {
