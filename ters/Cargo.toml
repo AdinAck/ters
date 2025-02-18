@@ -1,10 +1,10 @@
 [package]
 name = "ters"
-version = "0.1.0"
+version = "0.1.2"
 edition = "2021"
 description = "Generate getters and setters procedurally."
 license = "MIT"
 repository = "https://github.com/adinack/ters"
 
 [dependencies]
-ters-macros = { path = "../macros", version = "0.1.1" }
+ters-macros = { path = "../macros", version = "0.1.2" }

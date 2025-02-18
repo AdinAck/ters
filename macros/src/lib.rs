@@ -12,7 +12,7 @@ pub fn ters(_args: TokenStream, item: TokenStream) -> TokenStream {
 
     for field in s.fields.iter_mut() {
         let mut get = false;
-        let mut set = true;
+        let mut set = false;
 
         field.attrs.retain(|attr| {
             if attr.path().is_ident("get") {
