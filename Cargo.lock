@@ -46,7 +46,7 @@ dependencies = [
 
 [[package]]
 name = "ters-macros"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "procmacro2",
  "quote",
