@@ -1,6 +1,6 @@
 [package]
 name = "ters-macros"
-version = "0.1.3"
+version = "0.2.0"
 edition = "2021"
 description = "Supporting macros for the ters crate."
 license = "MIT"
@@ -10,6 +10,6 @@ repository = "https://github.com/adinack/ters"
 proc-macro = true
 
 [dependencies]
-procmacro2 = "99.9.99"
+proc-macro2 = "1.0.103"
 quote = "1.0.38"
 syn = { version = "2.0.98", features = ["full"] }
