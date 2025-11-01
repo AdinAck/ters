@@ -22,8 +22,8 @@ fn getters() {
 Annotate fields with `#[set]` to generate a setter method.
 ```rust
 use ters::ters;
-#[ters]
 
+#[ters]
 struct Foo {
     #[set]
     a: i32,

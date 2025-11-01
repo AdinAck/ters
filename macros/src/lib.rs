@@ -36,6 +36,7 @@ pub fn ters(_args: TokenStream, item: TokenStream) -> TokenStream {
 
         if *get {
             body.extend(quote! {
+                #[inline]
                 pub fn #ident(&self) -> &#ty {
                     &self.#ident
                 }
@@ -44,6 +45,7 @@ pub fn ters(_args: TokenStream, item: TokenStream) -> TokenStream {
 
         if *set {
             body.extend(quote! {
+                #[inline]
                 pub fn #set_ident(&mut self, value: #ty) {
                     self.#ident = value;
                 }
