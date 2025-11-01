@@ -59,12 +59,14 @@ fn getters_and_setters() {
 Unannotated fields will not have generated getters or setters.
 ```rust
 use ters::ters;
+
 #[ters]
 struct Foo {
     a: i32,
     #[get]
     b: bool,
 }
+
 fn getters_not_generated() {
     let foo = Foo { a: 42, b: true };
     assert_eq!(foo.a(), &42); // this method doesn't exist
