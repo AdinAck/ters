@@ -1,80 +1,8 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{parse_macro_input, ItemStruct};
+use syn::{parse_macro_input, Ident, ItemStruct};
 
-/// Generate getters and setters procedurally.
-///
-/// Annotate fields with `#[get]` to generate a getter method.
-/// ```ignore
-/// use ters::ters;
-///
-/// #[ters]
-/// struct Foo {
-///     a: i32,
-///     #[get]
-///     b: bool,
-/// }
-///
-/// fn getters() {
-///     let foo = Foo { a: 42, b: true };
-///     assert_eq!(foo.b(), &true);
-/// }
-/// ```
-///
-/// Annotate fields with `#[set]` to generate a setter method.
-/// ```ignore
-/// use ters::ters;
-///
-/// #[ters]
-/// struct Foo {
-///     #[set]
-///     a: i32,
-///     b: bool,
-/// }
-///
-/// fn setters() {
-///     let mut foo = Foo { a: 42, b: true };
-///     foo.set_a(31);
-/// }
-/// ```
-///
-/// Annotate fields with `#[get]` and `#[set]` to generate both a getter and a setter method.
-/// ```ignore
-/// use ters::ters;
-///
-/// #[ters]
-/// struct Foo {
-///     #[get]
-///     #[set]
-///     a: i32,
-///     b: bool,
-/// }
-///
-/// fn getters_and_setters() {
-///     let mut foo = Foo { a: 42, b: true };
-///     assert_eq!(foo.a(), &42);
-///     foo.set_a(31);
-///
-///     assert_eq!(foo.a(), &31);
-/// }
-/// ```
-///
-/// Unannotated fields will not have generated getters or setters.
-/// ```ignore
-/// use ters::ters;
-///
-/// #[ters]
-/// struct Foo {
-///     a: i32,
-///     #[get]
-///     b: bool,
-/// }
-///
-/// fn getters_not_generated() {
-///     let foo = Foo { a: 42, b: true };
-///     assert_eq!(foo.a(), &42); // this method doesn't exist
-/// }
-/// ```
+#[doc = include_str!("docs.md")]
 #[proc_macro_attribute]
 pub fn ters(_args: TokenStream, tokens: TokenStream) -> TokenStream {
     let item = parse_macro_input!(tokens as ItemStruct);
@@ -90,10 +18,17 @@ fn ters_inner(mut item: ItemStruct) -> proc_macro2::TokenStream {
     for field in item.fields.iter_mut() {
         let mut get = false;
         let mut set = false;
+        let mut deref = false;
 
         field.attrs.retain(|attr| {
             if attr.path().is_ident("get") {
                 get = true;
+
+                // super dumb, gotta add error emission
+                if attr.parse_args::<Ident>().is_ok_and(|x| x.eq("deref")) {
+                    deref = true
+                }
+
                 false
             } else if attr.path().is_ident("set") {
                 set = true;
@@ -108,6 +43,7 @@ fn ters_inner(mut item: ItemStruct) -> proc_macro2::TokenStream {
             field.ty.clone(),
             get,
             set,
+            deref,
             field
                 .attrs
                 .iter()
@@ -124,21 +60,27 @@ fn ters_inner(mut item: ItemStruct) -> proc_macro2::TokenStream {
 
     let accessors = fields
         .iter()
-        .filter_map(|(ident, ty, get, set, docs)| {
+        .filter_map(|(ident, ty, get, set, deref, docs)| {
             let set_ident = format_ident!("set_{ident}");
             let str_ident = ident.to_string();
 
             let mut body = quote! {};
 
             if *get {
+                let (content, return_) = if *deref {
+                    (quote! { self.#ident }, quote! { #ty })
+                } else {
+                    (quote! { &self.#ident }, quote! { &#ty })
+                };
+
                 body.extend(quote! {
                     #[doc = "Getter for `"]
                     #[doc = #str_ident]
                     #[doc = "`.\n\n"]
                     #(#docs)*
                     #[inline]
-                    pub fn #ident(&self) -> &#ty {
-                        &self.#ident
+                    pub fn #ident(&self) -> #return_ {
+                        #content
                     }
                 });
             }
