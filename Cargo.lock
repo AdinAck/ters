@@ -33,14 +33,14 @@ dependencies = [
 
 [[package]]
 name = "ters"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "ters-macros",
 ]
 
 [[package]]
 name = "ters-macros"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "proc-macro2",
  "quote",

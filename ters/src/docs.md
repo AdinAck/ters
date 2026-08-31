@@ -1,5 +1,3 @@
-# ters
-
 Generate getters and setters procedurally.
 
 Annotate fields with `#[get]` to generate a getter method.

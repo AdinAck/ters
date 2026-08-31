@@ -1,10 +1,8 @@
-# ters
-
 Generate getters and setters procedurally.
 
 Annotate fields with `#[get]` to generate a getter method.
 
-```rust
+```rust,ignore
 use ters::ters;
 
 #[ters]
@@ -22,7 +20,7 @@ fn getters() {
 
 Annotate fields with `#[get(deref)]` to generate a getter method that returns the dereferenced value.
 
-```rust
+```rust,ignore
 use ters::ters;
 
 #[ters]
@@ -40,7 +38,7 @@ fn getters() {
 
 Annotate fields with `#[set]` to generate a setter method.
 
-```rust
+```rust,ignore
 use ters::ters;
 
 #[ters]
@@ -58,7 +56,7 @@ fn setters() {
 
 Annotate fields with `#[get]` and `#[set]` to generate both a getter and a setter method.
 
-```rust
+```rust,ignore
 use ters::ters;
 
 #[ters]
@@ -79,7 +77,7 @@ fn getters_and_setters() {
 
 Unannotated fields will not have generated getters or setters.
 
-```rust,compile_fail,E0599
+```rust,ignore
 use ters::ters;
 
 #[ters]
